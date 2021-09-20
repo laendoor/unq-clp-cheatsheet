@@ -1,0 +1,328 @@
+\documentclass[twoside,a4paper,12pt]{article}
+\usepackage{color,soul}
+\usepackage{cmll}
+\usepackage{ulem}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{fancyhdr}
+\usepackage{amssymb,amsmath,amsthm}
+\usepackage[llbracket,rrbracket]{stmaryrd}
+\usepackage[top=1in, bottom=1.5in, left=1in, right=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{multicol}
+\usepackage{url}
+\usepackage{proof}
+\usepackage{cancel}
+\usepackage{tikz}
+\usetikzlibrary{babel,arrows}
+\usepackage{nicefrac}
+\usepackage{adjustbox,varwidth,xparse}
+\usepackage{longtable}
+\usepackage[square]{natbib}
+\usepackage{hyperref}
+\hypersetup{pdfpagemode=UseOutlines}
+\hypersetup{colorlinks=true}
+\hypersetup{urlcolor=red}
+\hypersetup{linkcolor=black}
+\hypersetup{citecolor=black}
+\usepackage{multirow}
+\allowdisplaybreaks
+
+
+\NewDocumentEnvironment{bracedrows}{m}
+  {\begin{adjustbox}{valign=t}%
+   $\kern-\nulldelimiterspace\left.
+   \begin{tabular}{@{}l@{}}}
+  {\end{tabular}\right\rbrace
+   \begin{varwidth}{.5\linewidth}#1\end{varwidth}$%
+   \end{adjustbox}}
+
+
+\parindent 0pt
+\let\tempone\itemize
+\let\temptwo\enditemize
+\renewenvironment{itemize}{\tempone\addtolength{\itemsep}{-0.4\baselineskip}}{\temptwo}
+
+\theoremstyle{definition}
+
+\newtheorem{innercustomgeneric}{\customgenericname}
+\providecommand{\customgenericname}{}
+\newcommand{\newcustomtheorem}[2]{%
+  \newenvironment{#1}[1]
+  {%
+   \renewcommand\customgenericname{#2}%
+   \renewcommand\theinnercustomgeneric{##1}%
+   \innercustomgeneric
+  }
+  {\endinnercustomgeneric}
+}
+
+\newcustomtheorem{definicion}{Definición}
+\newcustomtheorem{teorema}{Teorema}
+\newcustomtheorem{lema}{Lema}
+
+% \newtheorem{definicion}{Definición}[section]
+% \newtheorem{teorema}[definicion]{Teorema}
+% \newtheorem{lema}[definicion]{Lema}
+\newtheorem*{propiedades}{Propiedades}
+\newtheorem*{propiedad}{Propiedad}
+\theoremstyle{remark}
+\newtheorem*{observacion}{Observación}
+\newtheorem*{observaciones}{Observaciones}
+% \newtheorem{ejemplo}[definicion]{Ejemplo}
+% \newtheorem{ejemplos}[definicion]{Ejemplos}
+
+% \pagestyle{fancy}
+% \fancyhf{}
+% \fancyhead[RO,LE]{\thepage}
+% \fancyhead[LO]{\rmfamily\sc\nouppercase\leftmark}
+% \fancyhead[RE]{\rmfamily\sc\nouppercase\rightmark}
+% \setlength{\headheight}{27.16pt}
+
+
+\newcommand\One{\mathbf 1}
+\newcommand\concat{\!+\!\!\!\!+}
+\newcommand\concats{\textrm{\tiny $+\!\!\!+$}}
+\newcommand\append{:}
+\newcommand\coma{;}
+\newcommand\sem[1]{\ensuremath{\llbracket{#1}\rrbracket}}
+\newcommand\semT[2][\theta]{\ensuremath{\sem{#2}_{#1}}}
+\newcommand\ifz[3]{\ensuremath{\mathsf{ifz~}#1\mathsf{~then~}#2\mathsf{~else~}#3}}
+\newcommand\fun[2]{\ensuremath{\lambda {#1}{.}{#2}}}
+\newcommand\funSem[3]{{#1}^{\in \sem{#2}} \mapsto{#3}}
+\newcommand\fix[2]{\ensuremath{\mathsf{\mu}#1.#2}}
+\newcommand\fixfun[3]{\ensuremath{\mathsf{fixfun~}{#1}{\ }{#2}{.}{#3}}}
+\newcommand\letl[3]{\ensuremath{\mathsf{let~}#1=#2\mathsf{~in~}#3}}
+\newcommand\nat{\ensuremath{\mathsf{nat}}}
+\newcommand\fst{\ensuremath{\mathsf{fst}}}
+\newcommand\snd{\ensuremath{\mathsf{snd}}}
+\newcommand\self{\ensuremath{\mathsf{self}}}
+\newcommand\FV{\ensuremath{\mathsf{FV}}}
+\newcommand\mgu{\ensuremath{\mathsf{mgu}}}
+\newcommand\Gen{\ensuremath{\mathsf{Gen}}}
+\newcommand\s[1]{\ensuremath{\mathsf{#1}}}
+\newcommand\thunk[2]{\ensuremath{\langle{#1},{#2}\rangle}}
+\newcommand\cierre[3]{\ensuremath{\thunk{{#1},{#2}}{#3}}}
+\newcommand\hra{\ensuremath{\hookrightarrow}}
+\newcommand\FN{\ensuremath{\mathsf{FN}}}
+
+\hypersetup{
+  urlcolor=blue,
+}
+
+% \title{Características de lenguajes de programación}
+% \author{Alejandro Díaz-Caro \& Rafael Romero}
+% \date{2020}
+
+\begin{document}
+\begin{center}
+  {\Large UNQ | CLP | Cheat Sheet}
+
+  {\small Basado en 
+    \href
+    {http://clp.web.unq.edu.ar/wp-content/uploads/sites/110/2021/08/apuntes.pdf}
+    {Apuntes de la Materia}
+  }
+\end{center}
+
+\section*{PCF no tipado}
+
+\subsection*{Gramática}
+
+\begin{equation*}
+  t ::= x~|~\fun xt~|~tt~|~n\in\mathbb N~|~t+t~|~t-t~|~t\times t~|~t/t
+         ~|~\ifz ttt~|~\fix xt~|~\letl xtt
+\end{equation*}
+
+\subsection*{Semántica Operacional}
+
+\subsubsection*{Reglas Base}
+
+\begin{align}
+  (\fun xu)t &\to u[t/x] & \textrm{($\beta$ reducción)}\\
+  p\otimes q &\to n &\textrm{ Si $p\otimes q=n$, con $\otimes=+,-,\times$ o $/$}\\
+  \ifz 0tu &\to t\\
+  \ifz ntu &\to u &\textrm{ Si $n\neq0$ }\\
+  \fix xt &\to t[\fix xt/x]\\
+  \letl xtu &\to u[t/x]
+\end{align}
+
+\subsubsection*{Reglas de Congruencia}
+
+\[\arraycolsep=3pt\def\arraystretch{2.6}
+  \begin{array}{c c c}
+      \infer[rc_1]{tv\to uv}{t\to u}
+      & \infer[rc_2]{vt\to vu}{t\to u}
+      &\infer[rc_3]{\fun xt\to\fun xu}{t\to u} \\
+      \infer[rc_4]{t\otimes v\to u\otimes v}{t\to u}
+      & \infer[rc_5]{v\otimes t\to v\otimes u}{t\to u}
+      &\infer[rc_6]{\ifz tsv \to \ifz usv}{t\to u} \\
+      \infer[rc_7]{\fix ft \to \fix fu}{t\to u}
+      & \infer[rc_8]{\letl xts \to \letl xus}{t\to u}
+      &\infer[rc_9]{\letl xst \to \letl xsu}{t\to u}
+  \end{array}
+\]
+
+\newpage
+\section*{Estrategias de Reducción}
+
+\begin{definicion}{3.1}
+  Notamos $\to^*$ al cierre reflexivo y transitivo de $\to$.
+\end{definicion}
+
+\begin{definicion}{3.3}
+  Un término $t$:
+  \begin{enumerate}
+  \item está en forma normal si $\nexists$ $u$ tal que $t \to u$.
+  \item es normalizable si $\exists$ $u$ en forma normal tal que $t \to^*u$.
+  \item es fuertemente normalizable si $\nexists$ secuencia
+    infinita $v_0$, $v_1$, $\dots$ $|$ $t\to v_0\to v_1\to\dots$.
+  \end{enumerate}
+\end{definicion}
+
+\begin{definicion}{3.4}
+  Sea $\to_R$ una relación binaria, y $\to^*_R$ su cierre reflexivo y transitivo.
+  \begin{itemize}
+  \item
+    \begin{tikzpicture}[baseline=-1.5ex]
+      \node at (-7,-.4) {\parbox{0.7\textwidth}{ $\to_R$ satisface la
+          \emph{propiedad del diamante} si $t\to_R v_1$ y $t\to_R v_2$ implica
+          que $v_1\to_R u$ y $v_2\to_R u$ para algún $u$.} }; \node (t) at (0,0)
+      {$t$}; \node (v1) at (-1,-1) {$v_1$}; \node (v2) at (1,-1) {$v_2$}; \node
+      (u) at (0,-2) {$u$}; \draw[thick,->] (t) -- (v1); \draw[thick,->] (t) --
+      (v2); \draw[thick,->] (v1) -- (u); \draw[thick,->] (v2) -- (u);
+    \end{tikzpicture}
+  \item $\to_R$ es \emph{Church-Rosser} o \emph{confluente} si $\to^*_R$
+    satisface la propiedad del diamante.
+  \item $\to_R$ tiene \emph{formas normales únicas} si $t\to^*_R v_1$ y
+    $t\to^*_R v_2$ para términos en forma normal $v_1$ y $v_2$ implica
+    $v_1=v_2$.
+  \end{itemize}
+\end{definicion}
+
+\begin{lema}{3.5}
+  ~
+  \begin{enumerate}
+  \item Si $\to_R$ satisface la propiedad del diamante, entonces es
+    Church-Rosser.
+  \item Si $\to_R$ es Church-Rosser, entonces tiene formas normales únicas.
+  \end{enumerate}
+\end{lema}
+
+\begin{definicion}{3.8}
+  Llamamos \emph{redex} a un subtérmino de un término que puede reducir.
+\end{definicion}
+
+\subsection*{Reducción débil}
+
+\begin{definicion}{3.9}
+  Una estrategia de reducción es \emph{débil} si no reduce nunca el cuerpo de
+  una función, es decir, si no reduce bajo $\lambda$.
+\end{definicion}
+
+\subsection*{Call-by-name}
+
+\begin{definicion}{3.10}
+  La estrategia \emph{call-by-name} reduce siempre el \emph{redex} más a la
+  izquierda. En caso de ser además débil, será el más a la izquierda que no esté
+  debajo de un $\lambda$.
+\end{definicion}
+
+\begin{teorema}{3.11}
+  [Estandarización] Si un término reduce a un término en forma normal, entonces
+  la estrategia \emph{call-by-name} termina.
+\end{teorema}
+
+\subsection*{Call-by-value}
+
+\begin{definicion}{3.12}
+  A los términos $t$ de PCF tales que $\FV(t)=\emptyset$ y que $t$ esté en forma
+  normal, se les llaman \emph{valores}.
+\end{definicion}
+
+\begin{definicion}{3.13}
+  La estrategia \emph{call-by-value} consiste en evaluar siempre los argumentos
+  antes de pasarlos a la función. La idea es que $(\fun xt)v$
+  reduce sólo cuando $v$ esté en forma normal.
+\end{definicion}
+
+\newpage
+\section*{PCF tipado}
+
+\subsection*{Gramática}
+
+\begin{align*}
+  A &::= \nat~|~A\Rightarrow A\\
+  t &::= x~|~\fun{x:A}t~|~tt~|~n\in\mathbb N~|~t\otimes t~|~\ifz ttt~|~\fix{x:A}t~|~\letl{x:A}tt
+\end{align*}
+
+\paragraph{Contextos}
+Un \emph{contexto} nos da tipos para variables, entonces,
+en vez de decir $\fun{x:\nat}{yx}:\nat\Rightarrow\nat$, decimos, si
+$y:\nat\Rightarrow\nat$, entonces $\fun{x:\nat}{yx}:\nat\Rightarrow\nat$. La
+notación que usamos es la siguiente:
+\[
+  \underbrace{y:\nat\Rightarrow\nat}_{\textrm{contexto}}\vdash\fun{x:\nat}{yx}:\nat\Rightarrow\nat
+\]
+Genéricamente, queremos definir la relación $\Gamma\vdash t:A$ que asocia un
+término $t$ y un contexto $\Gamma$ a un tipo $A$.
+
+\begin{definicion}{4.2}
+  \label{def:ST}
+  La relación de tipado $\Gamma\vdash t:A$ se define inductivamente por:
+  \[\arraycolsep=10pt\def\arraystretch{2.6}
+    \begin{array}{cc}
+      \infer[ax_v]
+      {\Gamma,x:A\vdash x:A}
+      {}
+      &
+        \infer[ax_c]
+        {\Gamma\vdash n:\nat}
+        {}
+      \\
+      \infer[\Rightarrow_i]
+      {\Gamma\vdash\fun{x:A}t:A\Rightarrow B}
+      {\Gamma,x:A\vdash t:B}
+      &
+        \infer[\Rightarrow_e]
+        {\Gamma\vdash tu:B}
+        {\Gamma\vdash t:A\Rightarrow B & \Gamma\vdash u:A}
+      \\
+      \infer[\otimes]
+      {\Gamma\vdash t\otimes u:\nat}
+      {\Gamma\vdash t:\nat & \Gamma\vdash u:\nat}
+      &
+        \infer[\mathsf{ifz}]
+        {\Gamma\vdash\ifz tuv:A}
+        {\Gamma\vdash t:\nat & \Gamma\vdash u:A & \Gamma\vdash v:A}
+      \\
+      \infer[\mathsf{fix}]
+      {\Gamma\vdash\fix{x:A}t:A}
+      {\Gamma,x:A\vdash t:A}
+      &
+        \infer[\mathsf{let}]
+        {\Gamma\vdash\letl{x:A}ut:B}
+        {\Gamma,x:A\vdash t:B & \Gamma\vdash u:A}
+    \end{array}
+  \]
+  Donde $\otimes$ son cuatro reglas, una para cada operación aritmética.
+\end{definicion}
+
+\begin{teorema}{4.4}
+  [Subject reduction o conservación de tipos]
+  \label{thm:SR}
+  ~
+
+  Si $\Gamma\vdash t:A$ y $t\to u$ entonces $\Gamma\vdash u:A$.
+\end{teorema}
+
+\begin{teorema}{4.5}
+  [Teorema de Tait o normalización fuerte]
+  \label{thm:SN}
+  ~
+
+  Todo término tipado que no contenga a $\mathsf{fix}$, termina.
+\end{teorema}
+
+\end{document}
+
