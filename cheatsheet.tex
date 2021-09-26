@@ -338,35 +338,24 @@ término $t$ y un contexto $\Gamma$ a un tipo $A$.
 \paragraph{Reglas de tipado}
 \[\arraycolsep=10pt\def\arraystretch{2.6}
   \begin{array}{cc}
-    \infer[ax_v]
-    {\Gamma,x:A\vdash x:A}
-    {}
-    &
-      \infer[ax_c]
-      {\Gamma\vdash n:\nat}
-      {}
-    \\
+    \infer[ax_v]{\Gamma,x:A\vdash x:A}{} &
+    \infer[ax_c]{\Gamma\vdash n:\nat}{} \\
     \infer[\Rightarrow_i]
-    {\Gamma\vdash\fun xt:A\Rightarrow B}
-    {\Gamma,x:A\vdash t:B}
-    &
-      \infer[\Rightarrow_e]
+      {\Gamma\vdash\fun xt:A\Rightarrow B}
+      {\Gamma,x:A\vdash t:B} &
+    \infer[\Rightarrow_e]
       {\Gamma\vdash tu:B}
-      {\Gamma\vdash t:A\Rightarrow B & \Gamma\vdash u:A}
-    \\
+      {\Gamma\vdash t:A\Rightarrow B & \Gamma\vdash u:A} \\
     \infer[\otimes]
-    {\Gamma\vdash t\otimes u:\nat}
-    {\Gamma\vdash t:\nat & \Gamma\vdash u:\nat}
-    &
-      \infer[\mathsf{ifz}]
+      {\Gamma\vdash t\otimes u:\nat}
+      {\Gamma\vdash t:\nat & \Gamma\vdash u:\nat} &
+    \infer[\mathsf{ifz}]
       {\Gamma\vdash\ifz tuv:A}
-      {\Gamma\vdash t:\nat & \Gamma\vdash u:A & \Gamma\vdash v:A}
-    \\
+      {\Gamma\vdash t:\nat & \Gamma\vdash u:A & \Gamma\vdash v:A} \\
     \infer[\mathsf{fix}]
-    {\Gamma\vdash\fix xt:A}
-    {\Gamma,x:A\vdash t:A}
-    &
-      \infer[\mathsf{let}]
+      {\Gamma\vdash\fix xt:A}
+      {\Gamma,x:A\vdash t:A} &
+    \infer[\mathsf{let}]
       {\Gamma\vdash\letl xut:B}
       {\Gamma,x:A\vdash t:B & \Gamma\vdash u:A}
   \end{array}
@@ -384,7 +373,8 @@ término $t$ y un contexto $\Gamma$ a un tipo $A$.
 
 \subsection*{Algoritmo de Hindley}
 
-\begin{gather*}
+\[\arraycolsep=10pt\def\arraystretch{2.6}
+  \begin{array}{cc}
   \infer[hn]{\Gamma\vdash n\rightsquigarrow\nat,\emptyset}{} \\
   \infer[hx]{\Gamma,x:X\vdash x\rightsquigarrow X,\emptyset}{} \\
   \infer[h\lambda]
@@ -407,8 +397,9 @@ término $t$ y un contexto $\Gamma$ a un tipo $A$.
   \infer[h\mathsf{let}]
       {\Gamma\vdash\letl xut\rightsquigarrow A,\tau\cup\sigma\cup\{B=C\}}
       {\Gamma\vdash u\rightsquigarrow C,\tau & \Gamma,x:B\vdash t\rightsquigarrow A,\sigma}
-\end{gather*}
-
+  \end{array}
+\]
+    
 \subsection*{Algoritmo de unificación de Robinson}
 \begin{definicion}
   Sea $\theta$ una substitución $A_1/X_1,\dots,A_n/X_n$. Decimos que $\theta$ es
@@ -432,8 +423,8 @@ término $t$ y un contexto $\Gamma$ a un tipo $A$.
   \item Si $\exists$ ecuación $\nat=\nat$, \emph{borrarla}.
   \item Si $\exists$ ecuación $\nat=A\Rightarrow B$, o $A\Rightarrow B=\nat$, \emph{responder error}.
   \item Si $\exists$ ecuación $X=X$, \emph{borrarla}.
-  \item Si $\exists$ ecuación $A=X$, $X=A$ y $X$ \emph{aparece} en $A$, pero $A\neq X$, \emph{responder error}.
-  \item Si $\exists$ ecuación $A=X$, $X=A$ y $X$ \emph{no aparece} en $A$ pero
+  \item Si $\exists$ ecuación $A=X$ o $X=A$ donde $X$ \emph{aparece} en $A$ pero $A\neq X$, \emph{responder error}.
+  \item Si $\exists$ ecuación $A=X$ o $X=A$ donde $X$ \emph{no aparece} en $A$ pero
     aparece en otras ecuaciones ecuaciones, substituir $X$ por $A$ en todas las
     ecuaciones.
 \end{enumerate}
