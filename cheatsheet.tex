@@ -324,5 +324,119 @@ término $t$ y un contexto $\Gamma$ a un tipo $A$.
   Todo término tipado que no contenga a $\mathsf{fix}$, termina.
 \end{teorema}
 
+\newpage
+\section*{Inferencia de tipos simples}
+
+\paragraph{Estilo Curry:} $\vdash\fun x{x+1}:\nat\Rightarrow\nat$
+
+\paragraph{Gramática}
+\begin{align*}
+  A &::= \nat~|~A\Rightarrow A\\
+  t &::= x~|~\fun xt~|~tt~|~n~|~t\otimes t~|~\ifz ttt~|~\fix xt~|~\letl xtt
+\end{align*}
+
+\paragraph{Reglas de tipado}
+\[\arraycolsep=10pt\def\arraystretch{2.6}
+  \begin{array}{cc}
+    \infer[ax_v]
+    {\Gamma,x:A\vdash x:A}
+    {}
+    &
+      \infer[ax_c]
+      {\Gamma\vdash n:\nat}
+      {}
+    \\
+    \infer[\Rightarrow_i]
+    {\Gamma\vdash\fun xt:A\Rightarrow B}
+    {\Gamma,x:A\vdash t:B}
+    &
+      \infer[\Rightarrow_e]
+      {\Gamma\vdash tu:B}
+      {\Gamma\vdash t:A\Rightarrow B & \Gamma\vdash u:A}
+    \\
+    \infer[\otimes]
+    {\Gamma\vdash t\otimes u:\nat}
+    {\Gamma\vdash t:\nat & \Gamma\vdash u:\nat}
+    &
+      \infer[\mathsf{ifz}]
+      {\Gamma\vdash\ifz tuv:A}
+      {\Gamma\vdash t:\nat & \Gamma\vdash u:A & \Gamma\vdash v:A}
+    \\
+    \infer[\mathsf{fix}]
+    {\Gamma\vdash\fix xt:A}
+    {\Gamma,x:A\vdash t:A}
+    &
+      \infer[\mathsf{let}]
+      {\Gamma\vdash\letl xut:B}
+      {\Gamma,x:A\vdash t:B & \Gamma\vdash u:A}
+  \end{array}
+\]
+
+\begin{definicion}{5.1}
+  $A(X) = $ un tipo cualquiera que contiene alguna variable $X$. \\
+  $\theta = $ una substitución de meta-variables por tipos.
+\end{definicion}
+
+\begin{teorema}{5.3}
+  $\vdash t:A(X) \Rightarrow \ \vdash t:\theta A(X)$ para cualquier
+  substitución $\theta$.
+\end{teorema}
+
+\subsection*{Algoritmo de Hindley}
+
+\begin{gather*}
+  \infer[hn]{\Gamma\vdash n\rightsquigarrow\nat,\emptyset}{} \\
+  \infer[hx]{\Gamma,x:X\vdash x\rightsquigarrow X,\emptyset}{} \\
+  \infer[h\lambda]
+      {\Gamma\vdash\fun xt\rightsquigarrow A\Rightarrow B,\tau}
+      {\Gamma,x:A\vdash t\rightsquigarrow B,\tau} \\
+  \infer[hX]
+      {\Gamma\vdash tu\rightsquigarrow X,\tau\cup\sigma\cup\{A=B\Rightarrow X\}}
+      {\Gamma\vdash t\rightsquigarrow A,\tau & \Gamma\vdash u\rightsquigarrow B,\sigma } \\
+  \infer[h\otimes]
+      {\Gamma\vdash t\otimes u\rightsquigarrow\nat,\tau\cup\sigma\cup\{A=\nat,B=\nat\}}
+      {\Gamma\vdash t\rightsquigarrow A,\tau & \Gamma\vdash u\rightsquigarrow B,\sigma } \\
+  \infer[h\mathsf{ifz}]
+      {\Gamma\vdash\ifz tuv\rightsquigarrow A,\tau\cup\sigma\cup\rho\cup\{B=\nat,A=C\}}
+      {   \Gamma\vdash t\rightsquigarrow B,\tau
+        & \Gamma\vdash u\rightsquigarrow A,\sigma
+        & \Gamma\vdash v\rightsquigarrow C,\rho } \\
+  \infer[h\mathsf{fix}]
+      {\Gamma\vdash\fix xt\rightsquigarrow B,\tau\cup\{A=B\}}
+      {\Gamma,x:A\vdash t\rightsquigarrow B,\tau} \\
+  \infer[h\mathsf{let}]
+      {\Gamma\vdash\letl xut\rightsquigarrow A,\tau\cup\sigma\cup\{B=C\}}
+      {\Gamma\vdash u\rightsquigarrow C,\tau & \Gamma,x:B\vdash t\rightsquigarrow A,\sigma}
+\end{gather*}
+
+\subsection*{Algoritmo de unificación de Robinson}
+\begin{definicion}
+  Sea $\theta$ una substitución $A_1/X_1,\dots,A_n/X_n$. Decimos que $\theta$ es
+  una \emph{solución} del conjunto de ecuaciones $\tau$ si para todo $B=C$ en
+  $\tau$, $\theta B$ y $\theta C$ son idénticos.
+\end{definicion}
+
+\begin{teorema}
+  Si $\vdash t\rightsquigarrow A,\tau$, entonces para toda solución $\theta$ de
+  $\tau$, $\vdash t:\theta A$.
+
+  Más general: si $\Gamma\vdash t\rightsquigarrow A,\tau$, entonces para toda
+  solución $\theta$ de $\tau$, $\theta\Gamma\vdash t:\theta A$, donde
+  $\theta\Gamma$ es la substitución en cada tipo que aparece en $\Gamma$.
+\end{teorema}
+
+\paragraph{Algoritmo}
+\begin{enumerate}
+  \item Si $\exists$ ecuación $A\Rightarrow B=C\Rightarrow D$ \emph{reemplazarla}
+    por $A=C$ y $B=D$.
+  \item Si $\exists$ ecuación $\nat=\nat$, \emph{borrarla}.
+  \item Si $\exists$ ecuación $\nat=A\Rightarrow B$, o $A\Rightarrow B=\nat$, \emph{responder error}.
+  \item Si $\exists$ ecuación $X=X$, \emph{borrarla}.
+  \item Si $\exists$ ecuación $A=X$, $X=A$ y $X$ \emph{aparece} en $A$, pero $A\neq X$, \emph{responder error}.
+  \item Si $\exists$ ecuación $A=X$, $X=A$ y $X$ \emph{no aparece} en $A$ pero
+    aparece en otras ecuaciones ecuaciones, substituir $X$ por $A$ en todas las
+    ecuaciones.
+\end{enumerate}
+
 \end{document}
 
