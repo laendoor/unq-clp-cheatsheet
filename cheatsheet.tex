@@ -80,31 +80,32 @@
 % \setlength{\headheight}{27.16pt}
 
 
-\newcommand\One{\mathbf 1}
+% Comandos de Jano (mantener orden alfabético)
+\newcommand\append{:}
+\newcommand\cierre[3]{\ensuremath{\thunk{{#1},{#2}}{#3}}}
+\newcommand\coma{;}
 \newcommand\concat{\!+\!\!\!\!+}
 \newcommand\concats{\textrm{\tiny $+\!\!\!+$}}
-\newcommand\append{:}
-\newcommand\coma{;}
-\newcommand\sem[1]{\ensuremath{\llbracket{#1}\rrbracket}}
-\newcommand\semT[2][\theta]{\ensuremath{\sem{#2}_{#1}}}
-\newcommand\ifz[3]{\ensuremath{\mathsf{ifz~}#1\mathsf{~then~}#2\mathsf{~else~}#3}}
-\newcommand\fun[2]{\ensuremath{\lambda {#1}{.}{#2}}}
-\newcommand\funSem[3]{{#1}^{\in \sem{#2}} \mapsto{#3}}
 \newcommand\fix[2]{\ensuremath{\mathsf{\mu}#1.#2}}
 \newcommand\fixfun[3]{\ensuremath{\mathsf{fixfun~}{#1}{\ }{#2}{.}{#3}}}
-\newcommand\letl[3]{\ensuremath{\mathsf{let~}#1=#2\mathsf{~in~}#3}}
-\newcommand\nat{\ensuremath{\mathsf{nat}}}
-\newcommand\fst{\ensuremath{\mathsf{fst}}}
-\newcommand\snd{\ensuremath{\mathsf{snd}}}
-\newcommand\self{\ensuremath{\mathsf{self}}}
-\newcommand\FV{\ensuremath{\mathsf{FV}}}
-\newcommand\mgu{\ensuremath{\mathsf{mgu}}}
-\newcommand\Gen{\ensuremath{\mathsf{Gen}}}
-\newcommand\s[1]{\ensuremath{\mathsf{#1}}}
-\newcommand\thunk[2]{\ensuremath{\langle{#1},{#2}\rangle}}
-\newcommand\cierre[3]{\ensuremath{\thunk{{#1},{#2}}{#3}}}
-\newcommand\hra{\ensuremath{\hookrightarrow}}
 \newcommand\FN{\ensuremath{\mathsf{FN}}}
+\newcommand\fst{\ensuremath{\mathsf{fst}}}
+\newcommand\fun[2]{\ensuremath{\lambda {#1}{.}{#2}}}
+\newcommand\funSem[3]{{#1}^{\in \sem{#2}} \mapsto{#3}}
+\newcommand\FV{\ensuremath{\mathsf{FV}}}
+\newcommand\Gen{\ensuremath{\mathsf{Gen}}}
+\newcommand\hra{\ensuremath{\hookrightarrow}}
+\newcommand\ifz[3]{\ensuremath{\mathsf{ifz~}#1\mathsf{~then~}#2\mathsf{~else~}#3}}
+\newcommand\letl[3]{\ensuremath{\mathsf{let~}#1=#2\mathsf{~in~}#3}}
+\newcommand\mgu{\ensuremath{\mathsf{mgu}}}
+\newcommand\nat{\ensuremath{\mathsf{nat}}}
+\newcommand\One{\mathbf 1}
+\newcommand\s[1]{\ensuremath{\mathsf{#1}}}
+\newcommand\self{\ensuremath{\mathsf{self}}}
+\newcommand\sem[1]{\ensuremath{\llbracket{#1}\rrbracket}}
+\newcommand\semT[2][\theta]{\ensuremath{\sem{#2}_{#1}}}
+\newcommand\snd{\ensuremath{\mathsf{snd}}}
+\newcommand\thunk[2]{\ensuremath{\langle{#1},{#2}\rangle}}
 
 \hypersetup{
   urlcolor=blue,
@@ -466,7 +467,7 @@ ninguna variable está cuantificada.
   \end{align*}
 \end{definicion}
 
-\begin{definicion}{6.4}
+\begin{definicion}
   El sistema de tipos asocia contextos y términos con esquemas de tipos,
   $\Gamma\vdash t:\alpha$, y viene dado por
   \[
