@@ -429,5 +429,79 @@ término $t$ y un contexto $\Gamma$ a un tipo $A$.
     ecuaciones.
 \end{enumerate}
 
+
+\newpage
+\section*{Polimorfismo}
+
+\begin{gather*}
+  \fun xx : \forall X.(X\Rightarrow X) \\
+  \Gamma \vdash t : \forall x.A \Rightarrow \Gamma \vdash t: A[B/X]
+\end{gather*}
+
+\subsection*{Tipos polimórficos}
+
+\begin{definicion}{6.2}
+  Un esquema de tipo tiene forma $\forall X_1\dots\forall X_n.A$,
+  con $A$ un tipo y $n\geq 0$.
+\end{definicion}
+
+\paragraph*{Gramática a dos niveles}: uno para tipos y otro para
+esquemas de tipos.
+
+\begin{align*}
+  A & ::= X \mid \nat \mid A\Rightarrow A\\
+  \alpha & ::= [A]\mid\forall X.\alpha
+\end{align*}
+
+Si $A$ es un tipo, $[A]$ es un esquema de tipo formado por el tipo $A$ donde
+ninguna variable está cuantificada.
+
+\begin{definicion}{6.3}
+  Extendemos la definición de variables libres (\FV) para tipos:
+  \begin{align*}
+    \FV([X]) & = \{X\}\\
+    \FV([\nat]) & = \emptyset\\
+    \FV([A\Rightarrow B]) & = \FV([A])\cup\FV([B])\\
+    \FV(\forall X.\alpha) & = \FV(\alpha)\setminus\{X\}
+  \end{align*}
+\end{definicion}
+
+\begin{definicion}{6.4}
+  El sistema de tipos asocia contextos y términos con esquemas de tipos,
+  $\Gamma\vdash t:\alpha$, y viene dado por
+  \[
+    \begin{array}{c@{\qquad\qquad}c}
+      \infer[ax_v]{\Gamma,x:\alpha\vdash x:\alpha}{}
+      &
+        \infer[ax_c]{\Gamma\vdash n:[\nat]}{}
+      \\[2ex]
+      \infer[\Rightarrow_i]{\Gamma\vdash\fun xt:[A\Rightarrow B]}
+      {\Gamma,x:[A]\vdash t:[B]}
+      &
+        \infer[\Rightarrow_e]{\Gamma\vdash tu:[B]}
+        {
+        \Gamma\vdash t:[A\Rightarrow B]
+      &
+        \Gamma\vdash u:[A]
+        }
+      \\[2ex]
+      \infer[\otimes]{\Gamma\vdash t\otimes u:[\nat]}
+      {\Gamma\vdash t:[\nat] & \Gamma\vdash u:[\nat]}
+      &
+        \infer[\mathsf{ifz}]{\Gamma\vdash\ifz tuv:[A]}
+        {\Gamma\vdash t:[\nat] & \Gamma\vdash u:[A] & \Gamma\vdash v:[A]}
+      \\[2ex]
+      \infer[\mathsf{fix}]{\Gamma\vdash\fix xt:[A]}{\Gamma,x:[A]\vdash t:[A]}
+      &
+        \infer[\mathsf{let}]{\Gamma\vdash\letl xtu:[A]}
+        {\Gamma\vdash t:\alpha & \Gamma,x:\alpha\vdash u:[A]}
+      \\[2ex]
+      \textrm{Si }X\notin\FV(\Gamma),\ \vcenter{\infer[\forall_i]{\Gamma\vdash t:\forall X.\alpha}{\Gamma\vdash t:\alpha}}
+      &
+        \vcenter{\infer[\forall_e]{\Gamma\vdash t:\alpha[A/X]}{\Gamma\vdash t:\forall X.\alpha}}
+    \end{array}
+  \]
+\end{definicion}
+
 \end{document}
 
