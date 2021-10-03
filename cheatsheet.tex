@@ -165,6 +165,27 @@
 \]
 
 \newpage
+\subsubsection*{Definición de $t[u/x]$ (por inducción en $t$)}
+
+\begin{align*}
+  x[u/x] &= u\\
+  y[u/x] &= y\\
+  (\fun xt)[u/x] &=\fun xt\\
+  (\fun yt)[u/x] &=\fun y{t[u/x]} &\textrm{Si }y\notin \FV(u)\\
+  (\fun yt)[u/x] &=\fun z{t[z/y]}[u/x] &\textrm{Si }y\in \FV(u)\\
+  (tv)[u/x] &= t[u/x]v[u/x]\\
+  n[u/x] &=n\\
+  (t\otimes v)[u/x] &=t[u/x]\otimes v[u/x]\\
+  (\ifz t{v_1}{v_2})[u/x] &=\ifz{t[u/x]}{v_1[u/x]}{v_2[u/x]}\\
+  (\fix xt)[u/x] &=\fix xt\\
+  (\fix yt)[u/x] &=\fix yt[u/x] &\textrm{Si } y\notin \FV(u)\\
+  (\fix yt)[u/x] &=\fix zt[z/y][u/x] &\textrm{Si }y\in \FV(u)\\
+  (\letl xtv)[u/x] &=\letl x{t[u/x]}v\\
+  (\letl ytv)[u/x] &=\letl y{t[u/x]}{v[u/x]} &\textrm{Si }y\notin \FV(u)\\
+  (\letl ytv)[u/x] &=\letl y{t[u/x]}{v[z/y][u/x]} &\textrm{Si }y\in \FV(u)
+\end{align*}
+
+\newpage
 \section*{Estrategias de Reducción}
 
 \begin{definicion}{3.1}
@@ -244,7 +265,8 @@
 \begin{definicion}{3.13}
   La estrategia \emph{call-by-value} consiste en evaluar siempre los argumentos
   antes de pasarlos a la función. La idea es que $(\fun xt)v$
-  reduce sólo cuando $v$ esté en forma normal.
+  reduce sólo cuando $v$ esté en forma normal. Si la estrategia es débil, y sólo reducimos
+  términos cerrados, $v$ es un valor.
 \end{definicion}
 
 \newpage
@@ -372,6 +394,7 @@ término $t$ y un contexto $\Gamma$ a un tipo $A$.
   substitución $\theta$.
 \end{teorema}
 
+\clearpage
 \subsection*{Algoritmo de Hindley}
 
 \[\arraycolsep=10pt\def\arraystretch{2.6}
