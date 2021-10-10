@@ -79,37 +79,8 @@
 % \fancyhead[RE]{\rmfamily\sc\nouppercase\rightmark}
 % \setlength{\headheight}{27.16pt}
 
-
-% Comandos de Jano (mantener orden alfabético)
-\newcommand\append{:}
-\newcommand\bool{\ensuremath{\mathsf{bool}}}
-\newcommand\cierre[3]{\ensuremath{\thunk{{#1},{#2}}{#3}}}
-\newcommand\coma{;}
-\newcommand\concat{\!+\!\!\!\!+}
-\newcommand\concats{\textrm{\tiny $+\!\!\!+$}}
-\newcommand\false{\ensuremath{\mathsf{false}}}
-\newcommand\fix[2]{\ensuremath{\mathsf{\mu}#1.#2}}
-\newcommand\fixfun[3]{\ensuremath{\mathsf{fixfun~}{#1}{\ }{#2}{.}{#3}}}
-\newcommand\FN{\ensuremath{\mathsf{FN}}}
-\newcommand\fst{\ensuremath{\mathsf{fst}}}
-\newcommand\fun[2]{\ensuremath{\lambda {#1}{.}{#2}}}
-\newcommand\funSem[3]{{#1}^{\in \sem{#2}} \mapsto{#3}}
-\newcommand\FV{\ensuremath{\mathsf{FV}}}
-\newcommand\Gen{\ensuremath{\mathsf{Gen}}}
-\newcommand\hra{\ensuremath{\hookrightarrow}}
-\newcommand\ife[3]{\ensuremath{\mathsf{if~}#1\mathsf{~then~}#2\mathsf{~else~}#3}}
-\newcommand\ifz[3]{\ensuremath{\mathsf{ifz~}#1\mathsf{~then~}#2\mathsf{~else~}#3}}
-\newcommand\letl[3]{\ensuremath{\mathsf{let~}#1=#2\mathsf{~in~}#3}}
-\newcommand\mgu{\ensuremath{\mathsf{mgu}}}
-\newcommand\nat{\ensuremath{\mathsf{nat}}}
-\newcommand\One{\mathbf 1}
-\newcommand\s[1]{\ensuremath{\mathsf{#1}}}
-\newcommand\self{\ensuremath{\mathsf{self}}}
-\newcommand\sem[1]{\ensuremath{\llbracket{#1}\rrbracket}}
-\newcommand\semT[2][\theta]{\ensuremath{\sem{#2}_{#1}}}
-\newcommand\snd{\ensuremath{\mathsf{snd}}}
-\newcommand\thunk[2]{\ensuremath{\langle{#1},{#2}\rangle}}
-\newcommand\true{\ensuremath{\mathsf{true}}}
+% Comandos
+\input{janos-commands.tex}
 
 \hypersetup{
   urlcolor=blue,
