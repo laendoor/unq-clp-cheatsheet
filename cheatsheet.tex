@@ -465,7 +465,7 @@ ninguna variable está cuantificada.
   \end{align*}
 \end{definicion}
 
-\begin{definicion}
+\begin{definicion}{6.4}
   El sistema de tipos asocia contextos y términos con esquemas de tipos,
   $\Gamma\vdash t:\alpha$, y viene dado por
   \[
@@ -501,6 +501,79 @@ ninguna variable está cuantificada.
     \end{array}
   \]
 \end{definicion}
+
+\paragraph*{Sistema dirigido por sintaxis de Hindley-Milner}
+
+Primero definimos la siguiente relación entre tipos.
+\[
+  \alpha\preceq\forall X.\alpha\textrm{, si }X\notin\FV(\alpha)
+  \qquad\textrm{y}\qquad \forall X.\alpha\preceq\alpha[A/X]
+\]
+El sistema es el siguiente:
+\[
+  \infer{\Gamma,x:\alpha\vdash x:\beta}{\alpha\preceq\beta} \qquad
+  \infer{\Gamma\vdash n:[\nat]}{} \qquad \infer{\Gamma\vdash\lambda
+    x.t:[A\Rightarrow B]}{\Gamma,x:[A]\vdash t:[B]} \qquad \infer{\Gamma\vdash
+    tu:[B]}{\Gamma\vdash t:[A\Rightarrow B] & \Gamma\vdash u:[A]}
+\]
+\[
+  \infer{\Gamma\vdash t\otimes u:[\nat]}{\Gamma\vdash t:[\nat] & \Gamma\vdash
+    u:[\nat]} \qquad \infer{\Gamma\vdash\ifz tuv:[A]}{\Gamma\vdash t:[\nat] &
+    \Gamma\vdash u:[A] &\Gamma\vdash v:[A]}
+\]
+\newcommand\cuad[1]{[#1]}
+\[
+  \infer{\Gamma\vdash\fix xt:[A]}{\Gamma,x:[A]\vdash t:[A]} \qquad
+  \infer[\begin{array}{l}\vec\Gamma(A)=\forall\vec X.\cuad A,\\ \vec
+    X=\FV(A)\setminus\FV(\Gamma)\end{array}]{\Gamma\vdash\letl
+    xut:[B]}{\Gamma\vdash u:[A] & \Gamma,x:\vec\Gamma(A)\vdash t:[B]}
+\]
+
+\paragraph*{System F}
+
+\[
+  A::= \nat\mid A\Rightarrow A\mid X\mid \forall X.A
+\]
+
+\[\arraycolsep=10pt\def\arraystretch{2.6}
+    \begin{array}{cc}
+      \infer[ax_v]
+      {\Gamma,x:A\vdash x:A}
+      {}
+      &
+        \infer[ax_c]
+        {\Gamma\vdash n:\nat}
+        {}
+      \\
+      \infer[\Rightarrow_i]
+      {\Gamma\vdash\fun{x:A}t:A\Rightarrow B}
+      {\Gamma,x:A\vdash t:B}
+      &
+        \infer[\Rightarrow_e]
+        {\Gamma\vdash tu:B}
+        {\Gamma\vdash t:A\Rightarrow B & \Gamma\vdash u:A}
+      \\
+      \infer[\otimes]
+      {\Gamma\vdash t\otimes u:\nat}
+      {\Gamma\vdash t:\nat & \Gamma\vdash u:\nat}
+      &
+        \infer[\mathsf{ifz}]
+        {\Gamma\vdash\ifz tuv:A}
+        {\Gamma\vdash t:\nat & \Gamma\vdash u:A & \Gamma\vdash v:A}
+      \\
+      \infer[\mathsf{fix}]
+      {\Gamma\vdash\fix{x:A}t:A}
+      {\Gamma,x:A\vdash t:A}
+      &
+        \infer[\mathsf{let}]
+        {\Gamma\vdash\letl{x:A}ut:B}
+        {\Gamma,x:A\vdash t:B & \Gamma\vdash u:A}
+      \\
+      \infer[\forall_i]{\Gamma\vdash t:\forall X.A}{\Gamma\vdash t:A & X\notin\FV(\Gamma)}
+      &
+      \infer[\forall_e]{\Gamma\vdash t:A[B/X]}{\Gamma\vdash t:\forall X.A}
+    \end{array}
+  \]
 
 \end{document}
 
