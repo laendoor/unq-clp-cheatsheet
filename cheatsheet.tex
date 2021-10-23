@@ -575,5 +575,93 @@ El sistema es el siguiente:
     \end{array}
   \]
 
+\newpage
+\section*{Ejecución}
+
+\subsection*{Interprete CBN}
+
+\begin{equation*}
+  \infer[x\notin\mathsf D(\Delta)]
+    {\Gamma,x=\thunk t{\Gamma'},\Delta\vdash x\hra v}
+    {\Gamma'\vdash t\hra v} \qquad \infer{\Gamma\vdash n\hra n}{}
+  \qquad
+  \infer[\textrm{Si }n\otimes m=p]
+    {\Gamma\vdash t\otimes u\hra p}
+    {\Gamma\vdash t\hra n & \Gamma\vdash u\hra m }
+\end{equation*}
+\begin{equation*}
+  \infer
+    {\Gamma\vdash\fun xt\hra\thunk {\fun xt}\Gamma}{}
+  \qquad
+    \infer{\Gamma\vdash tr\hra v}
+    {
+      \Gamma\vdash t\hra\thunk {\fun x{t'}}{\Gamma'}
+      & \Gamma',x=\thunk r\Gamma\vdash t'\hra v
+    }
+\end{equation*}
+\begin{equation*}
+  \infer
+    {\Gamma\vdash \ifz trs\hra v}
+    {\Gamma\vdash t\hra 0 & \Gamma\vdash r\hra v}
+  \qquad
+  \infer[\textrm{Si }n\neq 0]
+    {\Gamma\vdash \ifz trs\hra v}
+    {\Gamma\vdash t\hra n & \Gamma\vdash s\hra v}
+\end{equation*}
+\begin{equation*}
+  \infer
+    {\Gamma\vdash\letl xrt\hra v}
+    {\Gamma,x=\thunk r\Gamma\vdash t\hra v}
+  \qquad
+    \infer{\Gamma\vdash\fix xt\hra v}
+    {\Gamma,x=\thunk{\fix xt}\Gamma\vdash t\hra v}
+\end{equation*}
+
+\subsection*{Intérprete en CBV}
+
+\begin{equation*}
+  \infer[x\notin\mathsf D(\Delta)]
+    {\Gamma,x=v,\Delta\vdash x\hra v}
+    {}
+  \qquad
+  \infer[x\notin\mathsf D(\Delta)]
+    {\Gamma,x=\thunk{\fix yt}\Gamma',\Delta\vdash x\hra v}
+    {\Gamma'\vdash\fix yt\to v}
+\end{equation*}
+\begin{equation*}
+  \infer{\Gamma\vdash n\hra n}{}
+  \qquad
+  \infer[\textrm{Si }n\odot m=p]
+    {\Gamma\vdash t\odot u\hra p}
+    {\Gamma\vdash t\hra n & \Gamma\vdash u\hra m }
+\end{equation*}
+\begin{equation*}
+  \infer
+    {\Gamma\vdash\fun xt\hra\thunk {\fun xt}\Gamma}
+    {}
+  \qquad
+  \infer
+    {\Gamma\vdash tr\hra v}
+    {
+      \Gamma\vdash r\hra w
+      &\Gamma\vdash t\hra\thunk {\fun x{t'}}{\Gamma'}
+      &\Gamma',x=w\vdash t'\hra v
+    }
+\end{equation*}
+\begin{equation*}
+  \infer{\Gamma\vdash \ifz trs\hra v} { \Gamma\vdash t\hra 0 & \Gamma\vdash
+    r\hra v }
+    \qquad
+    \infer[\textrm{Si }n\neq 0]
+    {\Gamma\vdash \ifz trs\hra v}
+  { \Gamma\vdash t\hra n & \Gamma\vdash s\hra v }
+\end{equation*}
+\begin{equation*}
+  \infer{\Gamma\vdash\letl xrt\hra v} { \Gamma\vdash r\hra w &
+    \Gamma,x=w\vdash t\hra v }
+    \qquad \infer{\Gamma\vdash\fix xt\hra v}
+  {\Gamma,x=\thunk{\fix xt}\Gamma\vdash t\hra v}
+\end{equation*}
+
 \end{document}
 
