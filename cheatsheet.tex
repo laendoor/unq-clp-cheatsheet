@@ -669,65 +669,57 @@ El sistema es el siguiente:
 \subsubsection*{Semántica Operacional ``Assembler''}
 
 \begin{align*}
-  (a,s,e,\mathsf{Mkclos}\ i\coma c) &\to (\thunk ie,s,e,c)\\
-  (a,s,e,\mathsf{Push}\coma c) &\to (a,a{\append}s,e,c)\\
-  (a,s,e,\mathsf{Extend}\coma c) &\to (a,s,e\concat [a],c)\\
-  (a,s,e,\mathsf{Search}\ n\coma c) &\to (v,s,e,c) \qquad\qquad \parbox[t]{7cm}{Si $v$ es el $n$-ésimo valor en $e$ comenzando desde la derecha}\\
-  (a,s,e,\mathsf{Pushenv}\coma c)&\to (a,e{\append}s,e,c)\\
-  (a,e'{\append}s,e,\mathsf{Popenv}\coma c) &\to (a,s,e',c)\\
-  (\thunk i{e'},w{\append}s,e,\mathsf{Apply}\coma c) &\to (\thunk i{e'},s,e'\concat [\thunk i{e'},w],i\coma c)\\
-  (a,s,e,\mathsf{Ldi}\ n\coma c)&\to (n,s,e,c)\\
-  (n,m{\append}s,e,\mathsf{Add}\coma c) &\to (n+m,s,e,c)\\
-  (n,m\coma s,e,\mathsf{Sub}\coma c) &\to (n-m,s,e,c)\\
-  (n,m\coma s,e,\mathsf{Mult}\coma c) &\to (n*m,s,e,c)\\
-  (n,m\coma s,e,\mathsf{Div}\coma c) &\to (n/m,s,e,c)\\
-  (0,s,e,\mathsf{Test}(i,j)\coma c) &\to (0,s,e,i\coma c)\\
-  (n,s,e,\mathsf{Test}(i,j)\coma c)&\to (n,s,e,j\coma c) \qquad\textrm{Si }n>0 
+  (a, s, e, \Mkclos i; c)                   & \to (\thunk ie, s, e, c)    \\
+  (a, s, e, \Push; c)                       & \to (a, a{\append}s, e, c)  \\
+  (a, s, e, \Extend; c)                     & \to (a, s, e\concat [a], c) \\
+  (a, s, e, \Search n; c)                   & \to (v, s, e, c)   \qquad\qquad v = e[n] \textrm{ desde la derecha}\\
+  (a, s, e, \Pushenv; c)                    & \to (a, e{\append}s, e, c)  \\
+  (a, e'{\append}s, e, \Popenv; c)          & \to (a, s, e',c)   \\
+  (\thunk i{e'}, w{\append}s, e, \Apply; c) & \to (\thunk i{e'}, s, e'\concat [\thunk i{e'},w], i; c)\\
+  (a, s, e, \Ldi n; c)                      & \to (n, s, e, c)    \\
+  (n, m{\append}s, e, \Add; c)              & \to (n+m, s, e, c)  \\
+  (n, m; s, e, \Sub; c)                     & \to (n-m, s, e, c)  \\
+  (n, m; s, e, \Mult; c)                    & \to (n*m, s, e, c)  \\
+  (n, m; s, e, \Div; c)                     & \to (n/m, s, e, c)  \\
+  (0, s, e, \Test i j; c)                   & \to (0, s, e, i; c) \\
+  (n, s, e, \Test i j; c)                   & \to (n, s, e,j; c) \qquad\qquad \textrm{Si }n>0 
 \end{align*}
 
 \subsubsection*{Compilador PCF}
 
 \begin{align*}
-  |x|_e &= \mathsf{Search}\ n\quad\textrm{donde $n$ es la posición de $x$ en $e$ desde la derecha}\\
-  |tu|_e &= \mathsf{Pushenv}\coma  |u|_e\coma \mathsf{Push}\coma  |t|_e\coma  \mathsf{Apply}\coma  \mathsf{Popenv}\\
-  |\fun xt|_e &= \mathsf{Mkclos}\ |t|_{e\concats[\_,x]}\\
-  |\fixfun fxt|_e &= \mathsf{Mkclos}\ |t|_{e\concats[f,x]}\\
-  |n|_e &= \mathsf{Ldi}\ n\\
-  |t+u|_e &= |u|_e\coma \mathsf{Push}\coma |t|_e\coma \mathsf{Add}\\
-  |t-u|_e &= |u|_e\coma \mathsf{Push}\coma |t|_e\coma \mathsf{Sub}\\
-  |t*u|_e &= |u|_e\coma \mathsf{Push}\coma |t|_e\coma \mathsf{Mult}\\
-  |t / u|_e &= |u|_e\coma \mathsf{Push}\coma |t|_e\coma \mathsf{Div}\\
-  |\ifz tuv|_e &= |t|_e\coma \mathsf{Test}(|u|_e\coma |v|_e)\\
-  |\letl xtu|_e &= \mathsf{Pushenv}\coma  |t|_e\coma  \mathsf{Extend}\coma  |u|_{e\concats [x]}\coma  \mathsf{Popenv}
+  |x|_e           &= \Search n \qquad\qquad\textrm{($n$ = \s{index}$(e, x)$ desde la derecha)}\\
+  |tu|_e          &= \Pushenv;  |u|_e; \Push;  |t|_e;  \Apply;  \Popenv\\
+  |\fun xt|_e     &= \Mkclos {|t|_{e\concats[\_,x]}} \\
+  |\fixfun fxt|_e &= \Mkclos {|t|_{e\concats[f,x]}}  \\
+  |n|_e           &= \Ldi n \\
+  |t+u|_e         &= |u|_e; \Push; |t|_e; \Add\\
+  |t-u|_e         &= |u|_e; \Push; |t|_e; \Sub\\
+  |t*u|_e         &= |u|_e; \Push; |t|_e; \Mult\\
+  |t / u|_e       &= |u|_e; \Push; |t|_e; \Div\\
+  |\ifz tuv|_e    &= |t|_e; \Test {|u|_e} {|v|_e})\\
+  |\letl xtu|_e   &= \Pushenv;  |t|_e;  \Extend;  |u|_{e\concats [x]};  \Popenv
 \end{align*}
 
 \newpage
 \subsubsection*{Descripción de Instrucciones ``Assembler''}
 \begin{tabular}{lp{12.6cm}}\\
-  \hline $\mathsf{Ldi}~n$ & Poner el entero $n$ en el acumulador\\
-  \hline $\mathsf{Push}$ & Poner el contenido del acumulador en la pila\\
-  \hline $\mathsf{Add}$ & Sumar el primero de la pila con el acumulador,
-  poner el resultado en el acumulador y borrar el elemento de la pila\\
-  \hline $\mathsf{Sub}$ & Restar el primero de la pila con el acumulador,
-  poner el resultado en el acumulador y borrar el elemento de la pila \\
-  \hline $\mathsf{Mult}$ & Multiplicar el primero de la pila con el
-  acumulador, poner el resultado en el acumulador y borrar el elemento de
-  la pila \\
-  \hline $\mathsf{Div}$ & Dividir el primero de la pila con el acumulador,
-  poner el resultado en el acumulador y borrar el elemento de la pila\\
-  \hline $\mathsf{Extend}$ & Extender el entorno agregando el contenido del acumulador en la última posición\\
-  \hline $\mathsf{Search}\ n$ & Buscar el valor en la posición $n$ en el entorno y ponerlo en el acumulador \\
-  \hline $\mathsf{Pushenv}$ & Meter el contenido del entorno arriba de la
-  pila \\
-  \hline $\mathsf{Popenv}$ & Sacar lo de arriba de la pila a un entorno \\
-  \hline $\mathsf{Mkclos(i)}$ & Meter el cierre $\thunk ie$ en el
-  acumulador, donde $e$ es el entorno actual \\
-  \hline $\mathsf{Apply}$ & Toma un cierre $\thunk ie$ del acumulador
+  \hline $\Ldi n$    & Pone $n$ en el acumulador \\
+  \hline $\Push$     & Pone el contenido del acumulador en la pila \\
+  \hline $\Add$      & Suma el tope de la pila con el acumulador, pone el resultado en el acumulador y borra el elemento de la pila \\
+  \hline $\Sub$      & Idem restando \\
+  \hline $\Mult$     & Idem multiplicando \\
+  \hline $\Div$      & Idem dividiendo \\
+  \hline $\Extend$   & Extiende el entorno agregando el contenido del acumulador en la última posición \\
+  \hline $\Search n$ & Busca el valor de la posición $n$ en el entorno y lo pone en el acumulador \\
+  \hline $\Pushenv$  & Mete el contenido del entorno al tope de la pila \\
+  \hline $\Popenv$   & Saca el tope de la pila a un entorno \\
+  \hline $\Mkclos i$ & Mete el $\thunk ie$ en el acumulador ($e$ es el entorno actual) \\
+  \hline $\Apply$    & Toma un cierre $\thunk ie$ del acumulador
   y pone el entorno $e, \thunk ie, W$, donde $W$ es el elemento de
   arriba de la pila; retira el elemento de arriba de la pila, y pone el
   resto de las instrucciones $i$ en el registro de código \\
-  \hline $\mathsf{Test}(i,j)$ & Meter $i$ o $j$ en el acumulador
-  dependiendo de si el acumulador es $0$ o $n>0$ \\ 
+  \hline $\Test ij$  & Mete $i$ o $j$ en el acumulador dependiendo de si el acumulador es $0$ o $n>0$ \\ 
   \hline
 \end{tabular}
 \end{document}
