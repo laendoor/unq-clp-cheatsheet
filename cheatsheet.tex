@@ -741,7 +741,7 @@ Sea $L$ in conjunto infinito de etiquetas válidas donde $l,l_1,\dots,l_n\in L$.
   \{l_1=t_1,\dots,l_{i-1}=t_{i-1},l_i=u,l_{i+1}=t_{i+1},\dots,l_n=t_n\}
 \end{align*}
 
-\subsection{PCF con Objetos}
+\subsection*{PCF con Objetos}
 
 \begin{align*}
   t ::= \dots~|~\{l_1=\sigma s.t,l_2=\sigma s.t,\dots,l_n=\sigma s.t\}~|~t\#l~|~t(l\leftarrow \sigma s.t)
@@ -759,6 +759,30 @@ donde $l,l_1,\dots,l_n\in L$, $s\in\mathsf{Vars}$.
     &~\qquad l_i = \sigma s.u_i, \\
     &~\qquad l_{i+1} = \sigma s.t_{i+1},\dots,l_n = \sigma s.t_n\}
 \end{align*}
+
+\section*{Semántica denotacional de PCF tipado}
+
+\paragraph{Interpretación de los tipos}
+
+\begin{align*}
+  \sem{\nat}           &= \mathbb N \\
+  \sem{A\Rightarrow B} &= \sem A\to\sem B \\
+  \semT x              &= \theta(x) \\
+  \semT{\fun{x:A}t}    &=\funSem aA{\semT[\theta,x=a] t}\\
+  \semT{tr}            &=\semT t\semT r\\
+  \semT n              &= n\\
+  \semT{t\otimes r}    &=
+  \semT t\otimes\semT r \\
+  \semT{\ifz trs}      &=
+    \left\{\begin{array}{ll}
+      \semT r & \textrm{si }\semT t=0\\
+      \semT s & \textrm{si }\semT t\in\mathbb N^*\\
+      \bot_A  & \textrm{si }\semT t=\bot_{\mathbb N}\textrm{ y $A$ es el tipo del término}
+    \end{array}\right. \\
+  \semT{\letl{x:A}rt}  &=\semT[\theta,x=\semT r] t\\
+  \semT{\fix{x:A}t}    &= \mathsf{FIX}(\funSem aA{\semT[\theta,x=a] t})
+\end{align*}
+donde $\mathsf{FIX}(f)$ es el mínimo punto fijo de $f$.
 
 \end{document}
 
