@@ -4,7 +4,7 @@
 \usepackage{ulem}
 \usepackage[spanish,es-nodecimaldot]{babel}
 \usepackage{fancyhdr}
-\usepackage{amssymb,amsmath,amsthm}
+\usepackage{amssymb,amsmath,amsthm,bm}
 \usepackage[llbracket,rrbracket]{stmaryrd}
 \usepackage[top=1in, bottom=1.5in, left=1in, right=1in]{geometry}
 \usepackage[T1]{fontenc}
@@ -582,39 +582,48 @@ El sistema es el siguiente:
 
 \begin{equation*}
   \infer[x\notin\mathsf D(\Delta)]
-    {\Gamma,x=\thunk t{\Gamma'},\Delta\vdash x\hra v}
-    {\Gamma'\vdash t\hra v} \qquad \infer{\Gamma\vdash n\hra n}{}
+    {\Gamma,x=\thunk {\bm{t}}{\Gamma'},\Delta\vdash x\hra v}
+    {\Gamma'\vdash \bm{t}\hra v}
+  \qquad
+  \infer[]
+    {\Gamma\vdash n\hra n}
+    {}
   \qquad
   \infer[\textrm{Si }n\otimes m=p]
-    {\Gamma\vdash t\otimes u\hra p}
-    {\Gamma\vdash t\hra n & \Gamma\vdash u\hra m }
+    {\Gamma\vdash \bm{t} \otimes \bm{u} \hra p}
+    {\Gamma\vdash \bm{t} \hra n & \Gamma\vdash \bm{u}\hra m }
 \end{equation*}
+
 \begin{equation*}
-  \infer
-    {\Gamma\vdash\fun xt\hra\thunk {\fun xt}\Gamma}{}
+  \infer[]
+    {\Gamma\vdash\fun xt\hra\thunk {\fun xt}\Gamma}
+    {}
   \qquad
-    \infer{\Gamma\vdash tr\hra v}
+  \infer[]
+    {\Gamma\vdash \bm{t} \bm{r} \hra v}
     {
-      \Gamma\vdash t\hra\thunk {\fun x{t'}}{\Gamma'}
-      & \Gamma',x=\thunk r\Gamma\vdash t'\hra v
+      \Gamma\vdash \bm{t} \hra \thunk{\fun x{t'}}{\Gamma'}
+      & \Gamma',x=\thunk{\bm{r}}{\Gamma} \vdash t'\hra v
     }
 \end{equation*}
+
 \begin{equation*}
   \infer
-    {\Gamma\vdash \ifz trs\hra v}
-    {\Gamma\vdash t\hra 0 & \Gamma\vdash r\hra v}
+    {\Gamma\vdash \ifz {\bm t}{\bm r}{s} \hra v}
+    {\Gamma\vdash \bm t \hra 0 & \Gamma \vdash \bm r \hra v}
   \qquad
   \infer[\textrm{Si }n\neq 0]
-    {\Gamma\vdash \ifz trs\hra v}
-    {\Gamma\vdash t\hra n & \Gamma\vdash s\hra v}
+    {\Gamma\vdash \ifz {\bm t}{r}{\bm s} \hra v}
+    {\Gamma\vdash \bm t \hra n & \Gamma\vdash \bm s \hra v}
 \end{equation*}
+
 \begin{equation*}
   \infer
-    {\Gamma\vdash\letl xrt\hra v}
-    {\Gamma,x=\thunk r\Gamma\vdash t\hra v}
+    {\Gamma \vdash \letl {x}{\bm r}{\bm t} \hra v}
+    {\Gamma,x=\thunk{\bm r}{\Gamma} \vdash \bm t \hra v}
   \qquad
-    \infer{\Gamma\vdash\fix xt\hra v}
-    {\Gamma,x=\thunk{\fix xt}\Gamma\vdash t\hra v}
+    \infer{\Gamma\vdash\fix{x}{\bm t} \hra v}
+    {\Gamma,x=\thunk{\fix{x}{\bm t}}\Gamma\vdash \bm t \hra v}
 \end{equation*}
 
 \subsection*{Intérprete en CBV}
@@ -625,42 +634,61 @@ El sistema es el siguiente:
     {}
   \qquad
   \infer[x\notin\mathsf D(\Delta)]
-    {\Gamma,x=\thunk{\fix yt}\Gamma',\Delta\vdash x\hra v}
-    {\Gamma'\vdash\fix yt\to v}
+    {\Gamma,x=\thunk{\bm{\fix yt}}{\bm{\Gamma'}},\Delta\vdash x\hra v}
+    {\bm{\Gamma'} \vdash \bm{\fix yt} \to v}
 \end{equation*}
+
 \begin{equation*}
-  \infer{\Gamma\vdash n\hra n}{}
+  \infer[]
+    {\Gamma\vdash n \hra n}
+    {}
   \qquad
   \infer[\textrm{Si }n\odot m=p]
-    {\Gamma\vdash t\odot u\hra p}
-    {\Gamma\vdash t\hra n & \Gamma\vdash u\hra m }
+    {\Gamma\vdash \bm t \odot \bm u \hra p}
+    {\Gamma\vdash \bm t \hra n & \Gamma\vdash \bm u \hra m }
 \end{equation*}
+
 \begin{equation*}
-  \infer
+  \infer[]
     {\Gamma\vdash\fun xt\hra\thunk {\fun xt}\Gamma}
     {}
   \qquad
   \infer
-    {\Gamma\vdash tr\hra v}
+    {\Gamma\vdash \bm{t} \bm{r} \hra v}
     {
-      \Gamma\vdash r\hra w
-      &\Gamma\vdash t\hra\thunk {\fun x{t'}}{\Gamma'}
+      \Gamma\vdash \bm r \hra w
+      &\Gamma\vdash \bm t \hra\thunk {\fun x{t'}}{\Gamma'}
       &\Gamma',x=w\vdash t'\hra v
     }
 \end{equation*}
+
 \begin{equation*}
-  \infer{\Gamma\vdash \ifz trs\hra v} { \Gamma\vdash t\hra 0 & \Gamma\vdash
-    r\hra v }
+  \infer[]
+    {\Gamma\vdash \ifz{\bm t}{\bm r}{s}\hra v}
+    {
+      \Gamma\vdash  \bm t \hra 0
+      &\Gamma\vdash \bm r \hra v
+    }
     \qquad
     \infer[\textrm{Si }n\neq 0]
-    {\Gamma\vdash \ifz trs\hra v}
-  { \Gamma\vdash t\hra n & \Gamma\vdash s\hra v }
+      {\Gamma\vdash \ifz{\bm t}{r}{\bm s} \hra v}
+      {
+        \Gamma\vdash  \bm t \hra n
+        &\Gamma\vdash \bm s \hra v
+      }
 \end{equation*}
+
 \begin{equation*}
-  \infer{\Gamma\vdash\letl xrt\hra v} { \Gamma\vdash r\hra w &
-    \Gamma,x=w\vdash t\hra v }
-    \qquad \infer{\Gamma\vdash\fix xt\hra v}
-  {\Gamma,x=\thunk{\fix xt}\Gamma\vdash t\hra v}
+  \infer[]
+    {\Gamma\vdash\letl{x}{\bm r}{\bm t} \hra v}
+    {
+      \Gamma\vdash \bm r \hra w
+      &\Gamma,x=w\vdash \bm t \hra v
+    }
+    \qquad
+    \infer[]
+      {\Gamma \vdash \fix x{\bm t} \hra v}
+      {\Gamma,x=\thunk{\fix x{\bm t}}\Gamma\vdash \bm t \hra v}
 \end{equation*}
 
 \newpage
