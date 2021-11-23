@@ -795,20 +795,24 @@ donde $l,l_1,\dots,l_n\in L$, $s\in\mathsf{Vars}$.
 \begin{align*}
   \sem{\nat}           &= \mathbb N \\
   \sem{A\Rightarrow B} &= \sem A\to\sem B \\
-  \semT x              &= \theta(x) \\
-  \semT{\fun{x:A}t}    &=\funSem aA{\semT[\theta,x=a] t}\\
-  \semT{tr}            &=\semT t\semT r\\
-  \semT n              &= n\\
-  \semT{t\otimes r}    &=
-  \semT t\otimes\semT r \\
+\end{align*}
+
+\paragraph{Interpretación de los tipos}
+
+\begin{align*}
+  \semT{x}             &= \theta(x) \\
+  \semT{\fun{x:A}t}    &= \funSem{a}{A}{\semT[\theta,x=a]{t}} \\
+  \semT{tr}            &= \semT{t} \semT{r}\\
+  \semT{n}             &= n \\
+  \semT{t\otimes r}    &= \semT{t} \otimes \semT{r} \\
   \semT{\ifz trs}      &=
     \left\{\begin{array}{ll}
-      \semT r & \textrm{si }\semT t=0\\
-      \semT s & \textrm{si }\semT t\in\mathbb N^*\\
-      \bot_A  & \textrm{si }\semT t=\bot_{\mathbb N}\textrm{ y $A$ es el tipo del término}
+      \semT{r} & \textrm{si }\semT{t} = 0 \\
+      \semT{s} & \textrm{si }\semT{t} \in \mathbb{N^*} \\
+      \bot_{A} & \textrm{si }\semT{t} = \bot_{\mathbb N} \textrm{ y $A$ es el tipo del término}
     \end{array}\right. \\
-  \semT{\letl{x:A}rt}  &=\semT[\theta,x=\semT r] t\\
-  \semT{\fix{x:A}t}    &= \mathsf{FIX}(\funSem aA{\semT[\theta,x=a] t})
+  \semT{\letl{x:A}{r}{t}} &= \semT[\theta,x=\semT{r}]{t} \\
+  \semT{\fix{x:A}{t}}     &= \FIX(\funSem{a}{A}{\semT[\theta,x=a]{t}})
 \end{align*}
 donde $\mathsf{FIX}(f)$ es el mínimo punto fijo de $f$.
 
