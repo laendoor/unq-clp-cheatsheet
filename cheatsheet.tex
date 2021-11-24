@@ -456,7 +456,7 @@ Si $A$ es un tipo, $[A]$ es un esquema de tipo formado por el tipo $A$ donde
 ninguna variable está cuantificada.
 
 \begin{definicion}{6.3}
-  Extendemos la definición de variables libres (\FV) para tipos:
+  Extendemos la definición de variables libres ($\FV$) para tipos:
   \begin{align*}
     \FV([X]) & = \{X\}\\
     \FV([\nat]) & = \emptyset\\
@@ -716,7 +716,7 @@ El sistema es el siguiente:
 \subsubsection*{Compilador PCF}
 
 \begin{align*}
-  |x|_e           &= \Search n \qquad\qquad\textrm{($n$ = \s{index}$(e, x)$ desde la derecha)}\\
+  |x|_e           &= \Search n \qquad\qquad (n = \s{index}(e, x) \text{desde la derecha})\\
   |tu|_e          &= \Pushenv;  |u|_e; \Push;  |t|_e;  \Apply;  \Popenv\\
   |\fun xt|_e     &= \Mkclos {|t|_{e\concats[\_,x]}} \\
   |\fixfun fxt|_e &= \Mkclos {|t|_{e\concats[f,x]}}  \\
