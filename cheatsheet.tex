@@ -576,7 +576,6 @@ El sistema es el siguiente:
   \]
 
 \newpage
-\section*{Ejecución}
 
 \subsection*{Interprete CBN}
 
@@ -626,7 +625,7 @@ El sistema es el siguiente:
     {\Gamma,x=\thunk{\fix{x}{\bm t}}\Gamma\vdash \bm t \hra v}
 \end{equation*}
 
-\subsection*{Intérprete en CBV}
+\subsection*{Intérprete CBV}
 
 \begin{equation*}
   \infer[x\notin\mathsf D(\Delta)]
@@ -692,9 +691,23 @@ El sistema es el siguiente:
 \end{equation*}
 
 \newpage
-\subsection*{Compilador}
+\subsection*{Compilador PCF}
 
-\subsubsection*{Semántica Operacional ``Assembler''}
+\begin{align*}
+  |x|_e           &= \Search n \qquad\qquad (n = \s{index}(e, x) \text{desde la derecha})\\
+  |tu|_e          &= \Pushenv;  |u|_e; \Push;  |t|_e;  \Apply;  \Popenv\\
+  |\fun xt|_e     &= \Mkclos {|t|_{e\concats[\_,x]}} \\
+  |\fixfun fxt|_e &= \Mkclos {|t|_{e\concats[f,x]}}  \\
+  |n|_e           &= \Ldi n \\
+  |t+u|_e         &= |u|_e; \Push; |t|_e; \Add\\
+  |t-u|_e         &= |u|_e; \Push; |t|_e; \Sub\\
+  |t*u|_e         &= |u|_e; \Push; |t|_e; \Mult\\
+  |t / u|_e       &= |u|_e; \Push; |t|_e; \Div\\
+  |\ifz tuv|_e    &= |t|_e; \Test {|u|_e} {|v|_e}\\
+  |\letl xtu|_e   &= \Pushenv;  |t|_e;  \Extend;  |u|_{e\concats [x]};  \Popenv
+\end{align*}
+
+\subsection*{Semántica Operacional ``Assembler''}
 
 \begin{align*}
   (a, s, e, \Mkclos i; c)                   & \to (\thunk ie, s, e, c)    \\
@@ -713,21 +726,6 @@ El sistema es el siguiente:
   (n, s, e, \Test i j; c)                   & \to (n, s, e,j; c) \qquad\qquad \textrm{Si }n>0 
 \end{align*}
 
-\subsubsection*{Compilador PCF}
-
-\begin{align*}
-  |x|_e           &= \Search n \qquad\qquad (n = \s{index}(e, x) \text{desde la derecha})\\
-  |tu|_e          &= \Pushenv;  |u|_e; \Push;  |t|_e;  \Apply;  \Popenv\\
-  |\fun xt|_e     &= \Mkclos {|t|_{e\concats[\_,x]}} \\
-  |\fixfun fxt|_e &= \Mkclos {|t|_{e\concats[f,x]}}  \\
-  |n|_e           &= \Ldi n \\
-  |t+u|_e         &= |u|_e; \Push; |t|_e; \Add\\
-  |t-u|_e         &= |u|_e; \Push; |t|_e; \Sub\\
-  |t*u|_e         &= |u|_e; \Push; |t|_e; \Mult\\
-  |t / u|_e       &= |u|_e; \Push; |t|_e; \Div\\
-  |\ifz tuv|_e    &= |t|_e; \Test {|u|_e} {|v|_e}\\
-  |\letl xtu|_e   &= \Pushenv;  |t|_e;  \Extend;  |u|_{e\concats [x]};  \Popenv
-\end{align*}
 
 \newpage
 \subsubsection*{Descripción de Instrucciones ``Assembler''}
@@ -751,33 +749,27 @@ El sistema es el siguiente:
   \hline
 \end{tabular}
 \newpage
-\section*{Registros y Objetos}
 
 \subsection*{PCF con Registros}
-
-Sea $L$ in conjunto infinito de etiquetas válidas donde $l,l_1,\dots,l_n\in L$.
 
 \begin{equation*}
   t ::= \dots~|~\{l_1=t,l_2=t,\dots,l_n=t\}~|~t\cdot l~|~t(l\leftarrow t)
 \end{equation*}
 
-\paragraph{Semántica operacional}
+donde $l,l_1,\dots,l_n\in L$.
 
 \begin{align*}
-  \{l_1=t_1,\dots,l_n=t_n\}\cdot l_i &\to t_i\\
+  \{l_1=t_1,\dots,l_n=t_n\}\cdot l_i         &\to t_i\\
   \{l_1=t_1,\dots,l_n=t_n\}(l_i\leftarrow u) &\to
   \{l_1=t_1,\dots,l_{i-1}=t_{i-1},l_i=u,l_{i+1}=t_{i+1},\dots,l_n=t_n\}
 \end{align*}
 
 \subsection*{PCF con Objetos}
-
 \begin{align*}
   t ::= \dots~|~\{l_1=\sigma s.t,l_2=\sigma s.t,\dots,l_n=\sigma s.t\}~|~t\#l~|~t(l\leftarrow \sigma s.t)
 \end{align*}
 
 donde $l,l_1,\dots,l_n\in L$, $s\in\mathsf{Vars}$.
-
-\paragraph{Semántica operacional}
 
 \begin{align*}
   \{l_1 = \sigma s.t_1,\dots,l_n = \sigma s.t_n\}\#l_i
@@ -788,33 +780,29 @@ donde $l,l_1,\dots,l_n\in L$, $s\in\mathsf{Vars}$.
     &~\qquad l_{i+1} = \sigma s.t_{i+1},\dots,l_n = \sigma s.t_n\}
 \end{align*}
 
-\section*{Semántica denotacional de PCF tipado}
-
-\paragraph{Interpretación de los tipos}
+\subsection*{Semántica denotacional de PCF tipado}
 
 \begin{align*}
   \sem{\nat}           &= \mathbb N \\
   \sem{A\Rightarrow B} &= \sem A\to\sem B \\
 \end{align*}
 
-\paragraph{Interpretación de los tipos}
-
 \begin{align*}
-  \semT{x}             &= \theta(x) \\
-  \semT{\fun{x:A}t}    &= \funSem{a}{A}{\semT[\theta,x=a]{t}} \\
-  \semT{tr}            &= \semT{t} \semT{r} \\
   \semT{n}             &= n \\
+  \semT{x}             &= \theta(x) \\
+  \semT{tr}            &= \semT{t} \semT{r} \\
   \semT{t\otimes r}    &= \semT{t} \otimes \semT{r} \\
+  \semT{\fun{x:A}t}    &= \funSem{a}{A}{\semT[\theta,x=a]{t}} \\
   \semT{\ifz trs}      &=
     \left\{\begin{array}{ll}
       \semT{r} & \textrm{si }\semT{t} = 0 \\
       \semT{s} & \textrm{si }\semT{t} \in \mathbb{N^*} \\
-      \bot_{A} & \textrm{si }\semT{t} = \bot_{\mathbb N} \textrm{ y $A$ es el tipo del término}
+      \bot_{A} & \textrm{si }\semT{t} = \bot_{\mathbb N} \quad \textrm{($A$ es el tipo $r$ y $s$)}
     \end{array}\right. \\
   \semT{\letl{x:A}{r}{t}} &= \semT[\theta,x=\semT{r}]{t} \\
   \semT{\fix{x:A}{t}}     &= \FIX(\funSem{a}{A}{\semT[\theta,x=a]{t}})
 \end{align*}
-donde $\mathsf{FIX}(f)$ es el mínimo punto fijo de $f$.
+$\mathsf{FIX}(f)$ es el mínimo punto fijo de $f$.
 
 \end{document}
 
